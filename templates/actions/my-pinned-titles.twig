@@ -1,0 +1,47 @@
+{% extends "@core/actions/my-pinned.twig" %}
+
+{% block pinned %}
+    {{ include_css('tools/bazar/presentation/styles/trombinoscope.css') }}
+    {{ include_css('styles/actions/my-pinned.css') }}
+
+    <div class="trombi-container my-pinned">
+        {% for pinned in pinnedResources %}
+            {% set pinnedTitle = pinned.title is not empty ? pinned.title : pinned.resource %}
+            <a class="bazar-entry modalbox" data-size="modal-lg"
+                    {{ (pinned.entry is not empty and pinned.entry.html_data is not empty) ? pinned.entry.html_data|raw : '' }}
+               href="{{ url({tag:pinned.resource}) }}"
+               title="{{ pinnedTitle }}"
+               id="pinnedTile{{pinned.resource}}">
+                <div class="image-container">
+                    <img loading="lazy" class="trombi-image img-placeholder"
+                         src="tools/bazar/libs/vendor/placeholder.php?size=140x140&amp;bg=efefef&amp;text=">
+                    {% if pinned.image is not empty %}
+                        <img loading="lazy" class="trombi-image for-my-pinned" alt="{{ pinnedTitle }}"
+                             src="{{ urlImage({fileName:"files/#{pinned.image}",width:140,height:140,mode:'fit'}) }}"
+                             onerror="javascripts:this.src='{{ "files/#{pinned.image}" }}';this.removeAttribute('onerror');"
+                        >
+                    {% else %}
+                        <i class="trombi-image icon-placeholder far fa-question-circle"></i>
+                    {% endif %}
+                </div>
+
+                <div class="caption trombi-content">
+                    <div class="title">{{ pinnedTitle }}</div>
+                </div>
+            </a>
+            <div class="pinned-container">
+                <a href="#"
+                   title="{{ _t('PINNED_REMOVE') }}"
+                   data-resource="{{ pinned.resource }}"
+                   data-user="{{ currentUser }}"
+                   data-linkedPinnedid="pinnedTile{{pinned.resource}}"
+                   class="btn btn-icon btn-default btn-xs pinned user-pinned">
+                    <i class="fas fa-thumbtack"></i>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {% if block('deleteAllButton') is defined %}
+        {{ block('deleteAllButton') }}
+    {% endif %}
+{% endblock %}

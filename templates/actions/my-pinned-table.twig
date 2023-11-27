@@ -1,0 +1,51 @@
+{% extends "@core/actions/my-pinned.twig" %}
+
+{% block pinned %}
+    {{ include_javascript('javascripts/vendor/datatables-full/jquery.dataTables.min.js') }}
+    {{ include_css('styles/vendor/datatables-full/dataTables.bootstrap.min.css') }}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th>{{ _t('PINNED_TITLE') }}</th>
+            <th>{{ _t('PINNED_LINK') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for pinned in pinnedResources %}
+            {% set pinnedTitle = pinned.title is not empty ? pinned.title : pinned.resource %}
+            <tr id="pinnedRow{{pinned.resource}}">
+                <td>
+                    <a href="#"
+                       title="{{ _t('PINNED_REMOVE') }}"
+                       data-resource="{{ pinned.resource }}"
+                       data-user="{{ currentUser }}"
+                       data-linkedPinnedid="pinnedRow{{pinned.resource}}"
+                       class="btn btn-icon btn-default btn-xs pinned user-pinned">
+                        <i class="fas fa-thumbtack"></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="bazar-entry modalbox" data-size="modal-lg"
+                       href="{{ url({tag:pinned.resource}) }}"
+                       title="{{ pinnedTitle }}">
+                        {{ pinnedTitle }}
+                    </a>
+                </td>
+                <td>
+                    <a class="bazar-entry modalbox" data-size="modal-lg"
+                       href="{{ url({tag:pinned.resource}) }}"
+                       title="{{ pinnedTitle }}">
+                        {{ url({tag:pinned.resource}) }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if block('deleteAllButton') is defined %}
+        {{ block('deleteAllButton') }}
+    {% endif %}
+{% endblock %}

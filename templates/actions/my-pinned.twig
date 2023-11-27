@@ -1,0 +1,37 @@
+{% do assets.addJs('tools/monoutilisateur/files/javascripts/pin.js') %}
+<h4>{{ _t('PINNED_MY_PINNED_RESOURCES') }}</h4>
+{% if currentUser is empty %}
+    {{ include("@templates/alert-message.twig",{
+        type: "warning",
+        message: _t('PINNED_NOT_CONNECTED')
+    }) }}
+{% else %}
+    {% if pinnedResources is empty %}
+        {{ include("@templates/alert-message.twig",{
+            type: "info",
+            message: _t('PINNED_NO_PINNED_RESOURCE')
+        }) }}
+    {% else %}
+        {% block pinned %}
+            <ul>
+                {% for pinned in pinnedResources %}
+                    <li id="pinnedLi{{pinned.resource}}">
+                        <a href="#"
+                           title="{{ _t('PINNED_REMOVE') }}"
+                           data-resource="{{ pinned.resource }}"
+                           data-user="{{ currentUser }}"
+                           data-toggle="tooltip"
+                           data-placement="right"
+                           data-linkedPinnedid="pinnedLi{{pinned.resource}}"
+                           class="btn btn-icon btn-default btn-xs pinned user-pinned eventSet">
+                            <i class="fas fa-thumbtack"></i>
+                        </a>
+                        <a href="{{ url({tag:pinned.resource}) }}" class="modalbox" data-size="modal-lg" title="{{ pinned.resource }}">
+                            {{ pinned.resource }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endif %}
+{% endif %}
